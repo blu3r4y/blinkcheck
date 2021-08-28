@@ -1,0 +1,30 @@
+name: publish-pypi-package
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install Poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Build project
+        run: poetry build
+      - name: Publish to PyPI
+        run: |
+          poetry config repositories.test https://test.pypi.org/legacy/
+          poetry config http-basic.test "__token__" "${POETRY_PYPI_TOKEN_PYPI}"
+          poetry publish -r test
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
