@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
@@ -23,8 +23,7 @@ jobs:
         run: poetry build
       - name: Publish to PyPI
         run: |
-          poetry config repositories.test https://test.pypi.org/legacy/
           poetry config http-basic.test "__token__" "${POETRY_PYPI_TOKEN_PYPI}"
-          poetry publish -r test
+          poetry publish
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}

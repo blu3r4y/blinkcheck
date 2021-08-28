@@ -1,5 +1,7 @@
 # 🌎 `blinkcheck` - a basic link checker
 
+[![Latest Release](https://img.shields.io/github/release/blu3r4y/blinkcheck.svg?style=popout-square)](https://github.com/blu3r4y/blinkcheck/releases/latest)
+[![PyPI Version](https://img.shields.io/pypi/v/blinkcheck?style=popout-square)](https://pypi.org/project/blinkcheck/)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=popout-square)](LICENSE.txt)
 
 Check for dead links in all files, with support for regex URL extraction and glob file patterns.
