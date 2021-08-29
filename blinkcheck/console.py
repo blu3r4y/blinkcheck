@@ -2,6 +2,7 @@ import argparse
 import copy
 import fnmatch
 import re
+import sys
 from pathlib import Path
 from typing import Dict, Iterator, List
 
@@ -16,6 +17,9 @@ T_GREY = "\033[90m"
 T_RED = "\033[91m"
 T_GREEN = "\033[92m"
 T_END = "\033[0m"
+
+# os.EX_* are only available on unix-like system
+EXIT_TEST_FAILED = 1
 
 
 class TestResult:
@@ -74,8 +78,12 @@ class LinkChecker:
         # regex, otherwise, get the full match (the 0th group)
         self._regex_group = 1 if self.regex.groups > 0 else 0
 
-    def check(self):
+    def check(self) -> int:
+        """
+        Returns number of urls where test failed.
+        """
         all_urls = self._get_all_urls()
+        fails_counter = 0
         for file, urls in all_urls.items():
             printed_prolog = False
 
@@ -89,8 +97,12 @@ class LinkChecker:
 
                     print(result)
 
+                if not result.ok:
+                    fails_counter += 1
+
             if printed_prolog:
                 print()
+        return fails_counter
 
     def _get_all_urls(self) -> Dict[Path, List[str]]:
         """
@@ -150,7 +162,10 @@ class LinkChecker:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Check for dead links in all files")
+    parser = argparse.ArgumentParser(
+        description="Check for dead links in all files."
+        "\nReturns exit code 1 if the test of an url failed, else 0."
+    )
     parser.add_argument(
         "--root",
         type=Path,
@@ -187,7 +202,8 @@ def main():
     print()
 
     lc = LinkChecker(**vars(args))
-    lc.check()
+    if lc.check() > 0:
+        sys.exit(EXIT_TEST_FAILED)
 
 
 if __name__ == "__main__":
