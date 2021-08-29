@@ -5,7 +5,7 @@ description = "Basic link checker"
 authors = ["Mario Kahlhofer <mario.kahlhofer@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/blu3r4y/pyforever"
+repository = "https://github.com/blu3r4y/blinkcheck"
 
 [tool.poetry.scripts]
 blinkcheck = "blinkcheck.console:main"
